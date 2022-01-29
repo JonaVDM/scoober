@@ -2,13 +2,14 @@ package scoober
 
 import (
 	"net/http"
+	"time"
 )
 
 // Scoober is the interface defining all the methods that the struct
 // implementing this needs to have
 type Scoober interface {
 	// GetShifts gets all the shifts between the dates start and end.
-	GetShifts(start, end string) ([]Shift, error)
+	GetShifts(start, end time.Time) ([]Shift, error)
 
 	// Login into your scoober account with email and password. Returns the
 	// access token and maybe an error. Fun fact, did you know that the token

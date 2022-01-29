@@ -5,22 +5,18 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // GetShifts will make a request and return the shift for
 // the period in time, with great detail!
-// Both the starting and end time must be formatted as
-// yyyy-mm-dd. I don't actually check this in here beacause
-// I am very lazy, and just didn't want to write code to
-// check it. I assume you know what you are doing tho.
-func (s *FactoryScoober) GetShifts(start, end string) ([]Shift, error) {
-	if start == "" || end == "" {
-		return nil, errors.New("the start and end date must not be empty")
-	}
-
+func (s *FactoryScoober) GetShifts(startTime, endTime time.Time) ([]Shift, error) {
 	if s.Token == "" {
 		return nil, errors.New("client is not logged in")
 	}
+
+	start := startTime.Format("2006-01-02")
+	end := endTime.Format("2006-01-02")
 
 	req, err := http.NewRequest("GET", s.BaseURL+"/api/users/plannings", nil)
 	if err != nil {
