@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 )
 
 // Login to a scoober account
-func (s *Scoober) Login(email string, password string) error {
+func (s *FactoryScoober) Login(email string, password string) (string, error) {
 	postBody, err := json.Marshal(map[string]string{
 		"userName": email,
 		"password": password,
@@ -18,18 +17,18 @@ func (s *Scoober) Login(email string, password string) error {
 	reqBody := bytes.NewBuffer(postBody)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	resp, err := s.Client.Post(s.BaseURL+"/login", "application/json", reqBody)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	type loginResponse struct {
@@ -42,22 +41,14 @@ func (s *Scoober) Login(email string, password string) error {
 	data := loginResponse{}
 	err = json.Unmarshal([]byte(sb), &data)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if data.Token == "" {
-		return errors.New("failed to sign in")
+		return "", errors.New("failed to sign in")
 	}
 
 	s.Token = data.Token
-	s.Name = fmt.Sprintf("%s %s", data.Firstname, data.Lastname)
 
-	return nil
-}
-
-func (s *Scoober) Logout() error {
-	s.Token = ""
-	s.Name = ""
-
-	return nil
+	return "", nil
 }

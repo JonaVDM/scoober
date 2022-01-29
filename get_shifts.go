@@ -8,12 +8,12 @@ import (
 )
 
 // GetShifts will make a request and return the shift for
-// the period in time, with great detail
+// the period in time, with great detail!
 // Both the starting and end time must be formatted as
 // yyyy-mm-dd. I don't actually check this in here beacause
 // I am very lazy, and just didn't want to write code to
 // check it. I assume you know what you are doing tho.
-func (s *Scoober) GetShifts(start, end string) ([]Shift, error) {
+func (s *FactoryScoober) GetShifts(start, end string) ([]Shift, error) {
 	if start == "" || end == "" {
 		return nil, errors.New("the start and end date must not be empty")
 	}
